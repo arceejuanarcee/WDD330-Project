@@ -48,5 +48,6 @@ function displayAlerts(alerts) {
     });
 }
 
+document.getElementById('currentYear').textContent = new Date().getFullYear();
 
 setInterval(fetchAlerts, 300000);
