@@ -23,7 +23,6 @@ async function fetchAlerts() {
 
 function displayAlerts(alerts) {
     const alertPanel = document.querySelector('.real-time-alerts');
-    alertPanel.innerHTML = ""; 
 
     if (alerts.length === 0) {
         alertPanel.innerHTML = "<p>No geomagnetic storm alerts at this time.</p>";
@@ -43,8 +42,11 @@ function displayAlerts(alerts) {
                 <p><strong>Status:</strong> Alert</p>
             </div>
         `;
-        alertPanel.appendChild(alertElement);
+
+        // Append new alerts at the top
+        alertPanel.prepend(alertElement);
     });
 }
+
 
 setInterval(fetchAlerts, 300000);
