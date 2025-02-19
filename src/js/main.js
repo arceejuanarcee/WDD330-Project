@@ -111,6 +111,8 @@ async function fetchEnlilTimeSeries() {
         const response = await fetch(url);
         const data = await response.json();
 
+        console.log("Enlil Time Series API Response:", data); // Log the response
+
         if (!data || data.length === 0) {
             throw new Error("No data available.");
         }
@@ -145,8 +147,8 @@ function displayEnlilData(data) {
     // Extract relevant data (show first 10 entries for visualization)
     const timeSeries = data.slice(0, 10).map(entry => ({
         time: entry.time_tag,
-        density: entry.density,
-        speed: entry.speed
+        temperature: entry.temperature || "N/A", // Correct key for temperature
+        earthParticles: entry.earth_particles_per_cm3 || "N/A" // Correct key for earth particles
     }));
 
     // Create Table
@@ -155,16 +157,16 @@ function displayEnlilData(data) {
         <thead>
             <tr>
                 <th>Time</th>
-                <th>Density (cm³)</th>
-                <th>Speed (km/s)</th>
+                <th>Temperature (K)</th>
+                <th>Earth Particles (per cm³)</th>
             </tr>
         </thead>
         <tbody>
             ${timeSeries.map(entry => `
                 <tr>
                     <td>${entry.time}</td>
-                    <td>${entry.density}</td>
-                    <td>${entry.speed}</td>
+                    <td>${entry.temperature}</td>
+                    <td>${entry.earthParticles}</td>
                 </tr>
             `).join('')}
         </tbody>

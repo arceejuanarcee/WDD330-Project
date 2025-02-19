@@ -88,6 +88,11 @@ main {
     box-shadow: 2px 2px 12px rgba(0, 0, 0, 0.1);
     border-radius: 10px;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
+    min-height: 350px; /* Ensures consistent height */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
 
 .panel:hover {
@@ -95,24 +100,24 @@ main {
     box-shadow: 4px 4px 15px rgba(0, 0, 0, 0.2);
 }
 
-/* === Improved Information Panel Styling === */
+/* Ensure information panel is uniform */
 .panel.information {
     width: 30%;
-    background-color: #ffffff;
-    padding: 20px;
-    margin: 10px auto; /* Centers the panel horizontally */
+    background-color: #f9f9f9;
+    padding: 25px;
+    margin: 10px;
     box-shadow: 2px 2px 12px rgba(0, 0, 0, 0.1);
     border-radius: 10px;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
-    height: 350px;
+    min-height: 350px; /* Match the other panels */
     display: flex;
     flex-direction: column;
-    justify-content: center; /* Centers content vertically */
-    align-items: center; /* Centers content horizontally */
+    justify-content: center;
+    align-items: center;
 }
 
 /* Title Styling */
-.panel.information h3 {
+.panel h3 {
     font-size: 18px;
     font-weight: bold;
     text-align: center;
@@ -134,7 +139,7 @@ main {
 
 /* Table Formatting */
 table {
-    width: 100%; /* Makes the table fill the entire container */
+    width: 100%; /* Ensures table fills the panel */
     border-collapse: collapse;
     font-size: 14px;
 }
@@ -178,7 +183,6 @@ tr:hover {
     border-radius: 3px;
 }
 
-
 /* Footer Styling */
 footer {
     background-color: #4a6fa5;
@@ -188,8 +192,6 @@ footer {
     margin-top: auto;
     font-size: 14px;
 }
-
-
 
 /* Responsive Styles */
 @media (max-width: 768px) {
