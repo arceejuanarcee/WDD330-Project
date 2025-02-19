@@ -2,16 +2,21 @@ document.addEventListener('DOMContentLoaded', () => {
     console.log('Space Weather Alert System Loaded');
     fetchAlerts();
     fetchF107Flux();
-    fetchEnlilTimeSeries(); // Fetch and display Enlil Time Series Data
+    fetchEnlilTimeSeries();
 });
 
 // Fetch Alerts
 async function fetchAlerts() {
-    const url = "https://services.swpc.noaa.gov/products/alerts.json";
+    const apiUrl = "https://services.swpc.noaa.gov/products/alerts.json";
+    const proxyUrl = "https://cors-anywhere.herokuapp.com/"; // Use if needed
+    const netlifyFunctionUrl = "/.netlify/functions/fetchAlerts"; // Better for production
 
     try {
-        const response = await fetch(url);
+        const response = await fetch(apiUrl); // Replace with netlifyFunctionUrl if needed
+        if (!response.ok) throw new Error(`HTTP Error: ${response.status}`);
+        
         const data = await response.json();
+        console.log("Alerts API Response:", data);
 
         const geomagneticStorms = data.filter(alert => 
             alert[2] && alert[2].includes("Geomagnetic Storm")
@@ -20,12 +25,18 @@ async function fetchAlerts() {
         displayAlerts(geomagneticStorms);
     } catch (error) {
         console.error("Error fetching alerts:", error);
-        document.querySelector('.real-time-alerts').innerHTML = "<p>Failed to load alerts.</p>";
+        document.querySelector('.real-time-alerts')?.innerHTML = "<p>Failed to load alerts.</p>";
     }
 }
 
+// Display Alerts
 function displayAlerts(alerts) {
     const alertPanel = document.querySelector('.real-time-alerts');
+    if (!alertPanel) {
+        console.error("Alert panel not found!");
+        return;
+    }
+    
     alertPanel.innerHTML = ""; // Clear previous alerts
 
     if (alerts.length === 0) {
@@ -46,28 +57,33 @@ function displayAlerts(alerts) {
                 <p><strong>Status:</strong> Alert</p>
             </div>
         `;
-
         alertPanel.prepend(alertElement);
     });
 }
 
 // Fetch F10.7 Flux Data
 async function fetchF107Flux() {
-    const url = "https://services.swpc.noaa.gov/json/f107_cm_flux.json";
+    const apiUrl = "https://services.swpc.noaa.gov/json/f107_cm_flux.json";
 
     try {
-        const response = await fetch(url);
+        const response = await fetch(apiUrl);
+        if (!response.ok) throw new Error(`HTTP Error: ${response.status}`);
+        
         const data = await response.json();
+        console.log("F10.7 Flux API Response:", data);
 
         displayF107Flux(data);
     } catch (error) {
         console.error("Error fetching F10.7 Flux data:", error);
-        document.querySelector('.information').innerHTML = "<p>Failed to load F10.7 Flux data.</p>";
+        document.querySelector('.information')?.innerHTML = "<p>Failed to load F10.7 Flux data.</p>";
     }
 }
 
+// Display F10.7 Flux Data
 function displayF107Flux(data) {
     const infoPanel = document.querySelector('.information');
+    if (!infoPanel) return;
+
     infoPanel.innerHTML = ""; // Clear previous data
 
     if (!data || data.length === 0) {
@@ -105,13 +121,14 @@ function displayF107Flux(data) {
 
 // Fetch Enlil Time Series Data
 async function fetchEnlilTimeSeries() {
-    const url = "https://services.swpc.noaa.gov/json/enlil_time_series.json";
+    const apiUrl = "https://services.swpc.noaa.gov/json/enlil_time_series.json";
 
     try {
-        const response = await fetch(url);
+        const response = await fetch(apiUrl);
+        if (!response.ok) throw new Error(`HTTP Error: ${response.status}`);
+        
         const data = await response.json();
-
-        console.log("Enlil Time Series API Response:", data); // Log the response
+        console.log("Enlil Time Series API Response:", data);
 
         if (!data || data.length === 0) {
             throw new Error("No data available.");
@@ -120,7 +137,7 @@ async function fetchEnlilTimeSeries() {
         displayEnlilData(data);
     } catch (error) {
         console.error("Error fetching Enlil Time Series data:", error);
-        document.querySelector('.historical-visualization').innerHTML = "<p>Failed to load Enlil time series data.</p>";
+        document.querySelector('.historical-visualization')?.innerHTML = "<p>Failed to load Enlil time series data.</p>";
     }
 }
 
@@ -132,26 +149,21 @@ function displayEnlilData(data) {
         return;
     }
 
-    // Clear previous content
     visualizationContainer.innerHTML = "";
 
-    // Create container
     const container = document.createElement('div');
     container.classList.add('enlil-visualization');
 
-    // Add title
     const title = document.createElement('h3');
     title.textContent = 'Enlil Solar Wind Model Data';
     container.appendChild(title);
 
-    // Extract relevant data (show first 10 entries for visualization)
     const timeSeries = data.slice(0, 10).map(entry => ({
         time: entry.time_tag,
-        temperature: entry.temperature || "N/A", // Correct key for temperature
-        earthParticles: entry.earth_particles_per_cm3 || "N/A" // Correct key for earth particles
+        temperature: entry.temperature || "N/A",
+        earthParticles: entry.earth_particles_per_cm3 || "N/A"
     }));
 
-    // Create Table
     const table = document.createElement('table');
     table.innerHTML = `
         <thead>
@@ -172,7 +184,6 @@ function displayEnlilData(data) {
         </tbody>
     `;
 
-    // Append Table
     container.appendChild(table);
     visualizationContainer.appendChild(container);
 }
